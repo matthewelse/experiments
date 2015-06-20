@@ -62,6 +62,7 @@ $(function () {
     var balls = [];
 
     var number_of_particles = 10;
+    var bounds = new Victor(paper.view.size.width, paper.view.size.height);
 
     var gui = new dat.GUI();
 
@@ -118,37 +119,46 @@ $(function () {
 
     var gas_changer = gui.add(settings, 'gas', Object.keys(settings.molecules));
 
+    var refill_screen = function() {
+        var size = new Victor(settings.molecules[settings.gas].size, settings.molecules[settings.gas].size);
+        var speed_rms = 3 * 0.5 * dis.k * dis.T;
+
+        for (var i = 0; i < number_of_particles; i++) {
+            // generate a particle...
+            var particle = gas_particle(settings.molecules[settings.gas].mass * 1.67E-27, bounds, size);
+            particles.push(particle);
+
+            if (settings.colour_scale) {
+                var t = particle.velocity.length()*particle.velocity.length()*particle.mass/3/dis.k;
+                var ratio = Math.min(t/1000, 1);
+            }
+            else {
+                var ratio = 1
+            }
+
+            var ball = new paper.Path.Circle({
+                center: paper.Point(particle.position.x, particle.position.y),
+                radius: settings.molecules[settings.gas].size,
+                fillColor: [ratio, 0, 1-ratio]
+            });
+            balls.push(ball);
+        }
+    }
+
     gas_changer.onChange(function(value) {
         dis.mass = settings.molecules[value].mass * 1.67E-27
+
+        balls.map(function(ball) {
+            ball.remove();
+        });
+
+        refill_screen();
     });
 
     //gui.addColor(settings, 'hot_colour');
     //gui.addColor(settings, 'cold_colour');
 
-    var size = new Victor(settings.molecules[settings.gas].size, settings.molecules[settings.gas].size);
-    var bounds = new Victor(paper.view.size.width, paper.view.size.height);
-    var speed_rms = 3 * 0.5 * dis.k * dis.T;
-
-    for (var i = 0; i < number_of_particles; i++) {
-        // generate a particle...
-        var particle = gas_particle(settings.molecules[settings.gas].mass * 1.67E-27, bounds, size);
-        particles.push(particle);
-
-        if (settings.colour_scale) {
-            var t = particle.velocity.length()*particle.velocity.length()*particle.mass/3/dis.k;
-            var ratio = Math.min(t/1000, 1);
-        }
-        else {
-            var ratio = 1
-        }
-
-        var ball = new paper.Path.Circle({
-            center: paper.Point(particle.position.x, particle.position.y),
-            radius: settings.molecules[settings.gas].size,
-            fillColor: [ratio, 0, 1-ratio]
-        });
-        balls.push(ball);
-    }
+    refill_screen();
 
     canvas.click(function(e) {
         var particle = gas_particle(settings.molecules[settings.gas].mass * 1.67E-27, bounds, new Victor(settings.molecules[settings.gas].size, settings.molecules[settings.gas].size), new Victor(e.pageX, e.pageY));

@@ -32,5 +32,6 @@ MaxwellBoltzmannDistribution.prototype = {
         }
         
         console.error("Unable to generate random point. Try again.");
+        return 0;
     }
 };

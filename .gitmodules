@@ -1,0 +1,3 @@
+[submodule "victor"]
+	path = victor
+	url = https://github.com/maxkueng/victor.git

@@ -18,7 +18,7 @@ MaxwellBoltzmannDistribution.prototype = {
         return a * b * Math.exp(p);
     },
     random: function() {
-        var v_max = 2500;
+        var v_max = 5000;
         var c_rms = Math.sqrt(3 * this.k * this.temperature / this.mass);
         var pd_max = this.pdf(c_rms);
 

@@ -85,11 +85,11 @@ function add_pattern(grid, pattern, x, y) {
         return line.length;
     }));
 
-    var grid_width = grid[0].length;
-    var grid_height = grid.length;
+    var grid_height = grid[0].length;
+    var grid_width = grid.length;
 
-    if (height + y >= grid_height || width + x >= grid_width) {
-        console.error('Can\'t place something here.');
+    if (height + y > grid_height || width + x > grid_width) {
+        console.warn('Can\'t place something here.');
         return;
     }
 

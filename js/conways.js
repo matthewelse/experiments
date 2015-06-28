@@ -43,7 +43,7 @@ $(function() {
     });
 
     paper.view.onFrame = function(event) {
-        if (controls.play && event.count % 5 == 0) {
+        if (controls.play) {
             for (var x = 0; x < paper.view.size.width/10; x++) {
                 for (var y = 0; y < paper.view.size.height/10; y++) {
                     var neighbours = 0;
